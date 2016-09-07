@@ -17,5 +17,6 @@ all:
 
 clean:
 	rm -rf *.mod.c *.mod.o *.ko *.o *.tmp_versions *.order *symvers *.unsigned .*.cmd .tmp_versions
+	#$(MAKE) -C $(KDIR)  M=$(PWD) clean
 
 endif
