@@ -71,7 +71,8 @@ static int __init mycdev_init(void)
 	int ret;
 
 	printk("mycdev module is staring..\n");
-
+    
+    // 老的方法
 	ret=register_chrdev(MYCDEV_MAJOR,"cdev",&mycdev_fops);
 	if(ret<0)
 	{
@@ -90,6 +91,7 @@ static int __init mycdev_init(void)
 static void __exit mycdev_exit(void)
 {
 	printk("mycdev module is leaving..\n");
+    // 老的方法
 	unregister_chrdev(MYCDEV_MAJOR,"cdev");
 }
 
@@ -97,6 +99,8 @@ module_init(mycdev_init);
 module_exit(mycdev_exit);
 
 /*
+http://edsionte.com/techblog/archives/2977
+
 1.make编译mycdev.c文件，并插入到内核；
 2.通过cat /proc/devices 查看系统中未使用的字符设备主设备号，比如当前231未使用；
 3.创建设备文件结点：sudo mknod /dev/mycdev c 231 0；具体使用方法通过man mknod命令查看；

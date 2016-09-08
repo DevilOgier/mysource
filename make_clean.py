@@ -3,7 +3,6 @@
 
 #print_xattr.py
 
-import xattr
 import os
 import sys
 from struct import *
@@ -32,7 +31,12 @@ def make_clean_all(directory):
 def main():
     #from dbgp.client import brk
     #brk(host="191.168.45.215", port=50803)
-    make_clean_all(os.getcwd())
+    if len(sys.argv) < 2:
+        dir = os.getcwd()
+    else:
+        dir = sys.argv[1]
+    print "dir: ",dir
+    make_clean_all(dir)
 
 
 
