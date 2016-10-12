@@ -1,6 +1,5 @@
 
-obj-m := my_kobj.o
-obj-m := my_kobj2.o
+obj-m := misc01.o
 
 PWD := $(shell pwd)
 
@@ -10,6 +9,8 @@ KDIR ?= /usr/src/linux-2.6.32-431.el6
 
 all:
 	$(MAKE) -C $(KDIR)  M=$(PWD)
+	gcc misc01_test.c -o misc01_test
 
 clean:
-	rm -rf *.mod.c *.mod.o *.ko *.o *.tmp_versions *.order *symvers *.unsigned .*.cmd .tmp_versions
+	rm -rf *.mod.c *.mod.o *.ko *.o *.tmp_versions *.order *symvers *.unsigned .*.cmd .tmp_versions misc01_test
+

@@ -1,7 +1,7 @@
 
-obj-m += myproc.o
-obj-m += procfs_example.o
-obj-m += seq_file.o
+obj-m += kthread.o
+obj-m += completion1.o
+obj-m += completion2.o
 
 KDIR ?= /usr/src/linux-2.6.32-431.el6
 

@@ -1,0 +1,37 @@
+# Object files
+*.o
+
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+# Kernel Modules
+*.ko
+*.mod.c
+Module.symvers
+modules.order
+
+# misc-progs
+nbtest 
+load50 
+mapcmp 
+polltest 
+mapper 
+setlevel 
+setconsole 
+inp 
+outp
+datasize
+dataalign
+netifdebug

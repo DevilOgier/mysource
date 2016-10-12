@@ -80,6 +80,7 @@ static struct kobj_type my_ktype= {
 /***************child*******************/
 
 //true child define
+// show：属性的读操作函数
 static ssize_t my_true_child_show(struct kobject *kobj,struct attribute *attr,char *buf) {
 	struct my_kobj_child *my_kobj_child_p = to_my_kobj_child(kobj);
 
@@ -95,7 +96,7 @@ static ssize_t my_true_child_show(struct kobject *kobj,struct attribute *attr,ch
 
 	return 0;
 }
-
+// store：属性的写操作函数
 static ssize_t my_true_child_store(struct kobject *kobj,struct attribute *attr,const char *buf,size_t count) {
 	struct my_kobj_child *my_kobj_child_p = to_my_kobj_child(kobj);
 
@@ -133,6 +134,7 @@ static struct attribute my_true_child_weight = {
 	.mode = S_IRUGO | S_IWUSR,//root 用户才能写
 };
 
+//每个kobject的属性会成为sysfs中的一个文件
 static struct attribute *my_true_child_def[] = {
 	&my_true_child_name,
 	&my_true_child_age,
@@ -228,6 +230,7 @@ static int __init my_kobj_init(void) {
 
 	my_kobj_p->kobj_child.cacogenic_info = 1;//初始化畸形等级为1
 
+    // 将对象添加到sysfs
 	ret = kobject_init_and_add(&my_kobj_p->kobj, &my_ktype, NULL, "my_kobj"); // parent 为null, 显示在sys目录下
 	if (ret) {
 		goto fail1;

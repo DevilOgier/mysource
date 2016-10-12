@@ -1,10 +1,6 @@
-ifneq ($(KERNELRELEASE),)
-
-mymodule_objs := cdev.o
 
 obj-m := cdev.o
-
-else
+obj-m := mycdev.o
 
 PWD := $(shell pwd)
 
@@ -19,4 +15,3 @@ all:
 clean:
 	rm -rf *.mod.c *.mod.o *.ko *.o *.tmp_versions *.order *symvers *.unsigned .*.cmd .tmp_versions user
 
-endif
