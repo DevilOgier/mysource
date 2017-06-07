@@ -1,0 +1,1 @@
+cmd_/home/code/github/chenzhongtao/mysource/kernel-test/aufs/built-in.o :=  rm -f /home/code/github/chenzhongtao/mysource/kernel-test/aufs/built-in.o; ar rcs /home/code/github/chenzhongtao/mysource/kernel-test/aufs/built-in.o
