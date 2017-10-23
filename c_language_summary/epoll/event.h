@@ -17,7 +17,7 @@
 struct event_pool;
 struct event_ops;
 
-// Õâ¸ödataÖ»ÓĞ64Î»
+// è¿™ä¸ªdataåªæœ‰64ä½
 struct event_data {
 	int fd;
 	int idx;
@@ -37,30 +37,30 @@ typedef int (*event_handler_t) (int fd, int idx, void *data,
 	} while (0)
 
 struct event_pool {
-	struct event_ops *ops; //ÊÂ¼ş³ØÏà¹Ø²Ù×÷º¯Êı
+	struct event_ops *ops; //äº‹ä»¶æ± ç›¸å…³æ“ä½œå‡½æ•°
 
-	int fd;  //epoll¾ä±ú
+	int fd;  //epollå¥æŸ„
 	int breaker[2];
 
-	int count; //¼àÌıµÄÊıÄ¿ 
-	// epoll¿ÉÒÔ´æ·ÅË½ÓĞÊı¾İ£¬¿ÉÒÔ°Ñfd,´¦Àíº¯Êı£¬ÆäËûÊı¾İ´æ·ÅÆğÀ´£¬ÕâÀï´æ·ÅÔÚÕâÀïÖ÷Òª
-	// ÊÇ¸úpollÍ³Ò»£¬ÒòÎªÆäÃ»ÓĞ´æ·ÅÊı¾İµÄ¶¨Òå
+	int count; //ç›‘å¬çš„æ•°ç›® 
+	// epollå¯ä»¥å­˜æ”¾ç§æœ‰æ•°æ®ï¼Œå¯ä»¥æŠŠfd,å¤„ç†å‡½æ•°ï¼Œå…¶ä»–æ•°æ®å­˜æ”¾èµ·æ¥ï¼Œè¿™é‡Œå­˜æ”¾åœ¨è¿™é‡Œä¸»è¦
+	// æ˜¯è·Ÿpollç»Ÿä¸€ï¼Œå› ä¸ºå…¶æ²¡æœ‰å­˜æ”¾æ•°æ®çš„å®šä¹‰
 	struct {
-		int fd;   /*¼àÌıµÄfd*/
-		int events; /* Epoll events ÔÚstruct epoll_eventÓĞ¶¨Òå */
-		void *data; /* ÓÃ»§Êı¾İ£¬Óëstruct epoll_eventÖĞµÄdata²»Ò»Ñù*/
-		event_handler_t handler; /*´¦Àíº¯Êı*/
-	} *reg; //ÊÂ¼ş×¢²á£¬count¸ö
+		int fd;   /*ç›‘å¬çš„fd*/
+		int events; /* Epoll events åœ¨struct epoll_eventæœ‰å®šä¹‰ */
+		void *data; /* ç”¨æˆ·æ•°æ®ï¼Œä¸struct epoll_eventä¸­çš„dataä¸ä¸€æ ·*/
+		event_handler_t handler; /*å¤„ç†å‡½æ•°*/
+	} *reg; //äº‹ä»¶æ³¨å†Œï¼Œcountä¸ª
 
-	int used; //ÒÑÊ¹ÓÃµÄ¼àÌıÊı
-	int changed; //event_pool ¸Ä±ä±êÖ¾Î»£¬ÈçÓĞĞÂfd×¢²áÊ±¾ÍÎª1
+	int used; //å·²ä½¿ç”¨çš„ç›‘å¬æ•°
+	int changed; //event_pool æ”¹å˜æ ‡å¿—ä½ï¼Œå¦‚æœ‰æ–°fdæ³¨å†Œæ—¶å°±ä¸º1
 
-	pthread_mutex_t mutex; //»¥³âÁ¿
-	pthread_cond_t cond;  //Ìõ¼ş±äÁ¿
+	pthread_mutex_t mutex; //äº’æ–¥é‡
+	pthread_cond_t cond;  //æ¡ä»¶å˜é‡
 
-    //epoll_waitº¯ÊıÖĞ²ÎÊıevcacheÓÃÀ´´ÓÄÚºËµÃµ½ÊÂ¼şµÄ¼¯ºÏ
-	void *evcache; //ÊÂ¼ş»º´æ
-	int evcache_size; //ÊÂ¼ş»º´æ´óĞ¡
+    //epoll_waitå‡½æ•°ä¸­å‚æ•°evcacheç”¨æ¥ä»å†…æ ¸å¾—åˆ°äº‹ä»¶çš„é›†åˆ
+	void *evcache; //äº‹ä»¶ç¼“å­˜
+	int evcache_size; //äº‹ä»¶ç¼“å­˜å¤§å°
 };
 
 struct event_ops {

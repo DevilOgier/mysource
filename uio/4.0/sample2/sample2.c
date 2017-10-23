@@ -1,4 +1,4 @@
-﻿/**
+/**
 *  This is a simple demon of uio driver.
 *  Last modified by
         09-20-2011   Joseph Yang(Yang Honggang)<ganggexiongqi@gmail.com>
@@ -16,6 +16,9 @@
 #include <linux/slab.h> /* kmalloc, kfree */
 #include <linux/device.h> /* class_create */
 #include <linux/kobject.h> /* kobject_uevent */
+#include <linux/vmalloc.h>
+
+
 #define FREQ HZ
 
 static long freq = FREQ;
@@ -24,7 +27,7 @@ static long my_event_count = 0;
 struct uio_info kpart_info = {
 	.name = "kpart",
 	.version = "0.1",
-	.irq = UIO_IRQ_NONE,
+	.irq = UIO_IRQ_CUSTOM,
 };
 
 static int drv_kpart_probe(struct device *dev);
@@ -67,11 +70,13 @@ static void drv_kpart_timer(unsigned long data) {
 static int drv_kpart_probe(struct device *dev) {
 
 	printk(KERN_EMERG"----->  /// drv_kpart_probe( %p)\n", dev);
-	kpart_info.mem[0].addr = (unsigned long)kmalloc(1024,GFP_KERNEL);
+    //kpart_info.mem[0].addr = (unsigned long)kmalloc(1024,GFP_KERNEL);  
+    kpart_info.mem[0].addr = (unsigned long)vmalloc(1024);
 
 	if(kpart_info.mem[0].addr == 0)
 		return -ENOMEM;
-	kpart_info.mem[0].memtype = UIO_MEM_LOGICAL;
+    //kpart_info.mem[0].memtype = UIO_MEM_LOGICAL;
+	kpart_info.mem[0].memtype = UIO_MEM_VIRTUAL;
 	kpart_info.mem[0].size = 1024;
 	// for the timer interruption
 	kpart_info.irq_flags = UIO_IRQ_CUSTOM;

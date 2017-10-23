@@ -2,7 +2,7 @@
 extern "C"{
 #endif
 
-#include <stdint.h> /*¶¨ÒåÁË uint64_tµÈ*/
+#include <stdint.h> /*å®šä¹‰äº† uint64_tç­‰*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -18,23 +18,23 @@ extern "C"{
 #define MAXEVENTS 64  
 #define DEFAULT_EVENT_POOL_SIZE            50000
 #define STARTING_EVENT_THREADS                 4
-//¶àÉÙ¸ö´òÓ¡Ò»´Î
+//å¤šå°‘ä¸ªæ‰“å°ä¸€æ¬¡
 #define INTERVAL_NUM 1000
 
-//ÕâÀïÖ»ÊÇÑİÊ¾ ÈçºÎÔÚepollÖĞ·ÅË½ÓĞÊı¾İ£¬fdºÍinxÆäÊµÔÚÁ½¸öhandlerº¯ÊıÖĞ¶¼ÓĞ
+//è¿™é‡Œåªæ˜¯æ¼”ç¤º å¦‚ä½•åœ¨epollä¸­æ”¾ç§æœ‰æ•°æ®ï¼Œfdå’Œinxå…¶å®åœ¨ä¸¤ä¸ªhandlerå‡½æ•°ä¸­éƒ½æœ‰
 struct private_data{
     int fd;
     int idx;
-};  //²»ÒªÍü¼Ç¼Ó·ÖºÅ
+};  //ä¸è¦å¿˜è®°åŠ åˆ†å·
 
 
 struct event_pool *pool = NULL;
 
   
-//º¯Êı:  
-//¹¦ÄÜ:´´½¨ºÍ°ó¶¨Ò»¸öTCP socket  
-//²ÎÊı:¶Ë¿Ú  
-//·µ»ØÖµ:´´½¨µÄsocket  
+//å‡½æ•°:  
+//åŠŸèƒ½:åˆ›å»ºå’Œç»‘å®šä¸€ä¸ªTCP socket  
+//å‚æ•°:ç«¯å£  
+//è¿”å›å€¼:åˆ›å»ºçš„socket  
 static int  
 create_and_bind (char *port)  
 {  
@@ -82,14 +82,14 @@ create_and_bind (char *port)
 }  
   
   
-//º¯Êı  
-//¹¦ÄÜ:ÉèÖÃsocketÎª·Ç×èÈûµÄ  
+//å‡½æ•°  
+//åŠŸèƒ½:è®¾ç½®socketä¸ºéé˜»å¡çš„  
 static int  
 make_socket_non_blocking (int sfd)  
 {  
   int flags, s;  
   
-  //µÃµ½ÎÄ¼ş×´Ì¬±êÖ¾  
+  //å¾—åˆ°æ–‡ä»¶çŠ¶æ€æ ‡å¿—  
   flags = fcntl (sfd, F_GETFL, 0);  
   if (flags == -1)  
     {  
@@ -97,7 +97,7 @@ make_socket_non_blocking (int sfd)
       return -1;  
     }  
   
-  //ÉèÖÃÎÄ¼ş×´Ì¬±êÖ¾  
+  //è®¾ç½®æ–‡ä»¶çŠ¶æ€æ ‡å¿—  
   flags |= O_NONBLOCK;  
   s = fcntl (sfd, F_SETFL, flags);  
   if (s == -1)  
@@ -137,7 +137,7 @@ socket_event_handler (int fd, int idx, void *data,
                     {  
                       /* If errno == EAGAIN, that means we have read all 
                          data. So go back to the main loop. 
-                         ·Ç×èÈûio·µ»ØEAGAIN±íÃ÷Êı¾İ¶ÁÍêÁË*/  
+                         éé˜»å¡ioè¿”å›EAGAINè¡¨æ˜æ•°æ®è¯»å®Œäº†*/  
                       if (errno != EAGAIN)  
                         {  
                           perror ("read");  
@@ -219,12 +219,12 @@ socket_server_event_handler (int fd, int idx, void *data,
                     }  
                 }  
 
-                              //½«µØÖ·×ª»¯ÎªÖ÷»úÃû»òÕß·şÎñÃû  
+                              //å°†åœ°å€è½¬åŒ–ä¸ºä¸»æœºåæˆ–è€…æœåŠ¡å  
               ret = getnameinfo (&in_addr, in_len,  
                                hbuf, sizeof hbuf,  
                                sbuf, sizeof sbuf,  
-                               NI_NUMERICHOST | NI_NUMERICSERV);//flag²ÎÊı:ÒÔÊı×ÖÃû·µ»Ø  
-                              //Ö÷»úµØÖ·ºÍ·şÎñµØÖ·  
+                               NI_NUMERICHOST | NI_NUMERICSERV);//flagå‚æ•°:ä»¥æ•°å­—åè¿”å›  
+                              //ä¸»æœºåœ°å€å’ŒæœåŠ¡åœ°å€  
 
             if (ret == 0)  
             {  
@@ -281,8 +281,8 @@ int32_t main(int32_t argc, char **argv)
   if (ret == -1)  
     abort ();  
 
-  // listenÖ®ºó¿Í»§¶Ë¾Í¿ÉÒÔÁ¬½ÓºÍ·¢ËÍÊı¾İÁË£¬¼´Ê¹·şÎñÆ÷»¹Ã»ÓĞaccept,ÄÚºËÒÑ¾­ÊÕµ½Êı¾İ£¬
-  // ¿Í»§¶Ë¿ÉÒÔÒ»Ö±·¢ËÍÊı¾İÖ±µ½·şÎñÆ÷µÄ½ÓÊÕ»º´æºÍ¿Í»§¶ËµÄ·¢ËÍ»º´æÂúÁË£¬write¾Í»á×èÈû
+  // listenä¹‹åå®¢æˆ·ç«¯å°±å¯ä»¥è¿æ¥å’Œå‘é€æ•°æ®äº†ï¼Œå³ä½¿æœåŠ¡å™¨è¿˜æ²¡æœ‰accept,å†…æ ¸å·²ç»æ”¶åˆ°æ•°æ®ï¼Œ
+  // å®¢æˆ·ç«¯å¯ä»¥ä¸€ç›´å‘é€æ•°æ®ç›´åˆ°æœåŠ¡å™¨çš„æ¥æ”¶ç¼“å­˜å’Œå®¢æˆ·ç«¯çš„å‘é€ç¼“å­˜æ»¡äº†ï¼Œwriteå°±ä¼šé˜»å¡
   ret = listen (sfd, SOMAXCONN);  
   if (ret == -1)  
     {  

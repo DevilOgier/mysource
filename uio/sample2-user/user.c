@@ -4,12 +4,14 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <string.h>
+
 
 #define UIO_DEV "/dev/uio0"
 #define UIO_ADDR "/sys/class/uio/uio0/maps/map0/addr"
 #define UIO_SIZE "/sys/class/uio/uio0/maps/map0/size"
 
-static char uio_addr_buf[16], uio_size_buf[16];
+static char uio_addr_buf[18], uio_size_buf[18];
 
 int main(void)
 {
@@ -47,12 +49,12 @@ int main(void)
 
   printf("1: read addr:%u\n", *addr);
   printf("1: write 0 to access_address\n");
- //¶ÁÐ´²Ù×÷
   *addr = 0;
-//  sleep(10);
-//  printf("2: read addr:%u\n", *addr);
+  
+  sleep(1);
+  printf("2: read addr:%u\n", *addr);
  // read out the timer interuption times  
-/*  unsigned long counter = 0;
+  unsigned long counter = 0;
   int ret;
   while ((ret = read(uio_fd, &counter, sizeof(counter)))
 				  == sizeof(counter)) {
@@ -61,9 +63,10 @@ int main(void)
   }
   
   if(ret < 0) 
-		  fprintf(stderr, "read error: %s\n", strerror(errno));
+		  //printf("read error: %d\n", ret);
+		  fprintf(stderr,"read error: %s\n", strerror(errno));
   printf("exit: counter is %d\n", counter);
-*/
+
   munmap(access_address, uio_size);
   close(uio_fd);
   return 0;

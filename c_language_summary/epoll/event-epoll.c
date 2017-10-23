@@ -23,7 +23,7 @@
 #ifdef HAVE_SYS_EPOLL_H
 #include <sys/epoll.h>
 
-//²éÕÒfdÔÚevent_poolÖÐµÄË÷Òý
+//æŸ¥æ‰¾fdåœ¨event_poolä¸­çš„ç´¢å¼•
 static int
 __event_getindex (struct event_pool *event_pool, int fd, int idx)
 {
@@ -48,7 +48,7 @@ out:
         return ret;
 }
 
-//ÊÂ¼þ³ØÐÂ½¨º¯Êý
+//äº‹ä»¶æ± æ–°å»ºå‡½æ•°
 static struct event_pool *
 event_pool_new_epoll (int count)
 {
@@ -59,9 +59,9 @@ event_pool_new_epoll (int count)
 
         if (!event_pool)
                 goto out;
-        // ³ØµÄ´óÐ¡£¬¼àÌýµÄÊýÄ¿ £¬¿ÉÒÔÔö¼Ó
+        // æ± çš„å¤§å°ï¼Œç›‘å¬çš„æ•°ç›® ï¼Œå¯ä»¥å¢žåŠ 
         event_pool->count = count;
-        //ÊÂ¼þ×¢²á£¬count¸ö£¬ÕâÀï·ÖÅäÄÚ´æ
+        //äº‹ä»¶æ³¨å†Œï¼Œcountä¸ªï¼Œè¿™é‡Œåˆ†é…å†…å­˜
         event_pool->reg = calloc (event_pool->count,
                                      sizeof (*event_pool->reg));
 
@@ -71,7 +71,7 @@ event_pool_new_epoll (int count)
                 goto out;
         }
 
-        // ´´½¨Ò»¸öepollµÄ¾ä±ú,×Ô´Ólinux2.6.8Ö®ºó£¬count²ÎÊýÊÇ±»ºöÂÔµÄ,»áÕ¼ÓÃÒ»¸öfd
+        // åˆ›å»ºä¸€ä¸ªepollçš„å¥æŸ„,è‡ªä»Žlinux2.6.8ä¹‹åŽï¼Œcountå‚æ•°æ˜¯è¢«å¿½ç•¥çš„,ä¼šå ç”¨ä¸€ä¸ªfd
         // ls -alh  /proc/32765/fd/
         // lrwx------. 1 root root 64 Aug 19 20:04 4 -> anon_inode:[eventpoll]
         epfd = epoll_create (count);
@@ -85,7 +85,7 @@ event_pool_new_epoll (int count)
                 goto out;
         }
 
-        // ±£´æepollµÄfd£¬ÆäËûepollº¯Êý»áÓÃµ½
+        // ä¿å­˜epollçš„fdï¼Œå…¶ä»–epollå‡½æ•°ä¼šç”¨åˆ°
         event_pool->fd = epfd;
         
         event_pool->count = count;
@@ -97,7 +97,7 @@ out:
         return event_pool;
 }
 
-/*ÊÂ¼þ×¢²áº¯Êý*/
+/*äº‹ä»¶æ³¨å†Œå‡½æ•°*/
 int
 event_register_epoll (struct event_pool *event_pool, int fd,
                       event_handler_t handler,
@@ -113,7 +113,7 @@ event_register_epoll (struct event_pool *event_pool, int fd,
 
         pthread_mutex_lock (&event_pool->mutex);
         {
-                //×î´ó¼àÌýÊýµÈÓÚÒÑÊ¹ÓÃ¼àÌýÊý£¬À©´ó³ØµÄ´óÐ¡
+                //æœ€å¤§ç›‘å¬æ•°ç­‰äºŽå·²ä½¿ç”¨ç›‘å¬æ•°ï¼Œæ‰©å¤§æ± çš„å¤§å°
                 if (event_pool->count == event_pool->used) {
                         event_pool->count *= 2;
 
@@ -133,22 +133,22 @@ event_register_epoll (struct event_pool *event_pool, int fd,
 
                 event_pool->reg[idx].fd = fd;
                 /*
-                   ±ßÔµ´¥·¢: Èç¹ûÕâ´ÎÃ»ÓÐ°ÑÕâ¸öÊÂ¼þ¶ÔÓ¦µÄÌ×½Ó×Ö»º³åÇø´¦ÀíÍê£¬
-                   ÔÚÕâ¸öÌ×½Ó×ÖÖÐÃ»ÓÐÐÂµÄÊÂ¼þÔÙ´Îµ½À´Ê±£¬ÔÚETÄ£Ê½ÏÂÊÇÎÞ·¨ÔÙ´Î´Ó
-                   epoll_waitµ÷ÓÃÖÐ»ñÈ¡Õâ¸öÊÂ¼þµÄ 
+                   è¾¹ç¼˜è§¦å‘: å¦‚æžœè¿™æ¬¡æ²¡æœ‰æŠŠè¿™ä¸ªäº‹ä»¶å¯¹åº”çš„å¥—æŽ¥å­—ç¼“å†²åŒºå¤„ç†å®Œï¼Œ
+                   åœ¨è¿™ä¸ªå¥—æŽ¥å­—ä¸­æ²¡æœ‰æ–°çš„äº‹ä»¶å†æ¬¡åˆ°æ¥æ—¶ï¼Œåœ¨ETæ¨¡å¼ä¸‹æ˜¯æ— æ³•å†æ¬¡ä»Ž
+                   epoll_waitè°ƒç”¨ä¸­èŽ·å–è¿™ä¸ªäº‹ä»¶çš„ 
                 */
-                event_pool->reg[idx].events = EPOLLET ;//±ßÔµ´¥·¢(Edge Triggered)Ä£Ê½  EPOLLPRI; //±íÊ¾¶ÔÓ¦µÄÎÄ¼þÃèÊö·ûÓÐ½ô¼±µÄÊý¾Ý¿É¶Á
-                //ÕâÀïµÄ¿ØÖÆº¯ÊýºÍË½ÓÐÊý¾ÝÊÇ±£´æÔÚ×Ô¼ºÊµÏÖµÄregÖÐ£¬¶ø²»ÊÇepoll×Ô´øµÄ epoll_data
-                event_pool->reg[idx].handler = handler; //¿ØÖÆº¯Êý
-                event_pool->reg[idx].data = data; // Ë½ÓÐÊý¾Ý
+                event_pool->reg[idx].events = EPOLLET ;//è¾¹ç¼˜è§¦å‘(Edge Triggered)æ¨¡å¼  EPOLLPRI; //è¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦æœ‰ç´§æ€¥çš„æ•°æ®å¯è¯»
+                //è¿™é‡Œçš„æŽ§åˆ¶å‡½æ•°å’Œç§æœ‰æ•°æ®æ˜¯ä¿å­˜åœ¨è‡ªå·±å®žçŽ°çš„regä¸­ï¼Œè€Œä¸æ˜¯epollè‡ªå¸¦çš„ epoll_data
+                event_pool->reg[idx].handler = handler; //æŽ§åˆ¶å‡½æ•°
+                event_pool->reg[idx].data = data; // ç§æœ‰æ•°æ®
 
                 switch (poll_in) {
                 case 1:
-                        //EPOLLINÎ» ÖÃ1
+                        //EPOLLINä½ ç½®1
                         event_pool->reg[idx].events |= EPOLLIN;
                         break;
                 case 0:
-                        //EPOLLINÎ» ÇåÁã
+                        //EPOLLINä½ æ¸…é›¶
                         event_pool->reg[idx].events &= ~EPOLLIN;
                         break;
                 case -1:
@@ -178,7 +178,7 @@ event_register_epoll (struct event_pool *event_pool, int fd,
 
                 event_pool->changed = 1;
 
-                // .events ÊÇÒ»Ð©²ÎÊý
+                // .events æ˜¯ä¸€äº›å‚æ•°
                 epoll_event.events = event_pool->reg[idx].events;
                 /*
                     typedef union epoll_data {  
@@ -187,29 +187,29 @@ event_register_epoll (struct event_pool *event_pool, int fd,
                         __uint32_t u32;  
                         __uint64_t u64;  
                     } epoll_data_t;  
-                     //¸ÐÐËÈ¤µÄÊÂ¼þºÍ±»´¥·¢µÄÊÂ¼þ  
+                     //æ„Ÿå…´è¶£çš„äº‹ä»¶å’Œè¢«è§¦å‘çš„äº‹ä»¶  
                     struct epoll_event {  
                         __uint32_t events; // Epoll events  
                         epoll_data_t data; // User data variable   
                     };  
                 */
 
-                // ÓÃ epoll_data_t dataÕ¼ÓÃµÄ64Î»¿Õ¼äÀ´·ÅfdºÍinx,Èç¹ûÒª·Å¸ü¶àÊý¾ÝÒª
-                // ×Ô¼º·ÖÅä¿Õ¼ä£¬data´æ·Å¿Õ¼äµÄµØÖ·£¬ÕâÀïÎÒÃÇ°ÑÊý¾Ý·ÅÔÚregÖÐ
+                // ç”¨ epoll_data_t dataå ç”¨çš„64ä½ç©ºé—´æ¥æ”¾fdå’Œinx,å¦‚æžœè¦æ”¾æ›´å¤šæ•°æ®è¦
+                // è‡ªå·±åˆ†é…ç©ºé—´ï¼Œdataå­˜æ”¾ç©ºé—´çš„åœ°å€ï¼Œè¿™é‡Œæˆ‘ä»¬æŠŠæ•°æ®æ”¾åœ¨regä¸­
                 ev_data->fd = fd;
                 ev_data->idx = idx;
 
                 /*
-                epollµÄÊÂ¼þ×¢²áº¯Êý£¬Ëü²»Í¬ÓÚselect()ÊÇÔÚ¼àÌýÊÂ¼þÊ±¸æËßÄÚºËÒª¼àÌý
-                Ê²Ã´ÀàÐÍµÄÊÂ¼þ£¬¶øÊÇÔÚÕâÀïÏÈ×¢²áÒª¼àÌýµÄÊÂ¼þÀàÐÍ¡£
-                µÚÒ»¸ö²ÎÊýÊÇepoll_create()µÄ·µ»ØÖµ¡£
-                µÚ¶þ¸ö²ÎÊý±íÊ¾¶¯×÷£¬ÓÃÈý¸öºêÀ´±íÊ¾£º
-                EPOLL_CTL_ADD£º×¢²áÐÂµÄfdµ½epfdÖÐ£»
-                EPOLL_CTL_MOD£ºÐÞ¸ÄÒÑ¾­×¢²áµÄfdµÄ¼àÌýÊÂ¼þ£»
-                EPOLL_CTL_DEL£º´ÓepfdÖÐÉ¾³ýÒ»¸öfd£»
+                epollçš„äº‹ä»¶æ³¨å†Œå‡½æ•°ï¼Œå®ƒä¸åŒäºŽselect()æ˜¯åœ¨ç›‘å¬äº‹ä»¶æ—¶å‘Šè¯‰å†…æ ¸è¦ç›‘å¬
+                ä»€ä¹ˆç±»åž‹çš„äº‹ä»¶ï¼Œè€Œæ˜¯åœ¨è¿™é‡Œå…ˆæ³¨å†Œè¦ç›‘å¬çš„äº‹ä»¶ç±»åž‹ã€‚
+                ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯epoll_create()çš„è¿”å›žå€¼ã€‚
+                ç¬¬äºŒä¸ªå‚æ•°è¡¨ç¤ºåŠ¨ä½œï¼Œç”¨ä¸‰ä¸ªå®æ¥è¡¨ç¤ºï¼š
+                EPOLL_CTL_ADDï¼šæ³¨å†Œæ–°çš„fdåˆ°epfdä¸­ï¼›
+                EPOLL_CTL_MODï¼šä¿®æ”¹å·²ç»æ³¨å†Œçš„fdçš„ç›‘å¬äº‹ä»¶ï¼›
+                EPOLL_CTL_DELï¼šä»Žepfdä¸­åˆ é™¤ä¸€ä¸ªfdï¼›
                  
-                µÚÈý¸ö²ÎÊýÊÇÐèÒª¼àÌýµÄfd¡£
-                µÚËÄ¸ö²ÎÊýÊÇ¸æËßÄÚºËÐèÒª¼àÌýÊ²Ã´ÊÂ*/
+                ç¬¬ä¸‰ä¸ªå‚æ•°æ˜¯éœ€è¦ç›‘å¬çš„fdã€‚
+                ç¬¬å››ä¸ªå‚æ•°æ˜¯å‘Šè¯‰å†…æ ¸éœ€è¦ç›‘å¬ä»€ä¹ˆäº‹*/
                 ret = epoll_ctl (event_pool->fd, EPOLL_CTL_ADD, fd,
                                  &epoll_event);
 
@@ -220,7 +220,7 @@ event_register_epoll (struct event_pool *event_pool, int fd,
                         goto unlock;
                 }
 
-                //½«»½ÐÑµÈ´ý¸ÄÌõ¼þµÄËùÓÐÏß³Ì
+                //å°†å”¤é†’ç­‰å¾…æ”¹æ¡ä»¶çš„æ‰€æœ‰çº¿ç¨‹, event_dispatch_epollå‡½æ•°ä½¿ç”¨åˆ°
                 pthread_cond_broadcast (&event_pool->cond);
         }
 unlock:
@@ -230,7 +230,7 @@ out:
         return ret;
 }
 
-/*ÊÂ¼þ×¢²áÒÆ³ý*/
+/*äº‹ä»¶æ³¨å†Œç§»é™¤*/
 static int
 event_unregister_epoll (struct event_pool *event_pool, int fd, int idx_hint)
 {
@@ -245,7 +245,7 @@ event_unregister_epoll (struct event_pool *event_pool, int fd, int idx_hint)
 
         pthread_mutex_lock (&event_pool->mutex);
         {
-                // idx¿ÉÄÜ»á±ä(¼ûÏÂÃæ£¬ÐÞ¸Äidx¿ÉÄÜÊ§°ÜÁË?)£¬ËùÒÔÕâÀïÒª²é¿´Ò»ÏÂ
+                // idxå¯èƒ½ä¼šå˜(è§ä¸‹é¢ï¼Œä¿®æ”¹idxå¯èƒ½å¤±è´¥äº†?)ï¼Œæ‰€ä»¥è¿™é‡Œè¦æŸ¥çœ‹ä¸€ä¸‹
                 idx = __event_getindex (event_pool, fd, idx_hint);
 
                 if (idx == -1) {
@@ -256,7 +256,7 @@ event_unregister_epoll (struct event_pool *event_pool, int fd, int idx_hint)
                         goto unlock;
                 }
                 
-                //´ÓepfdÖÐÉ¾³ýÒ»¸öfd£»
+                //ä»Žepfdä¸­åˆ é™¤ä¸€ä¸ªfdï¼›
                 ret = epoll_ctl (event_pool->fd, EPOLL_CTL_DEL, fd, NULL);
 
                 /* if ret is -1, this array member should never be accessed */
@@ -274,19 +274,19 @@ event_unregister_epoll (struct event_pool *event_pool, int fd, int idx_hint)
                         goto unlock;
                 }
 
-                //Èç¹ûÊÇ×îºóÒ»¸ö£¬Ö±½ÓÉ¾³ý£¬used¼õÒ»
+                //å¦‚æžœæ˜¯æœ€åŽä¸€ä¸ªï¼Œç›´æŽ¥åˆ é™¤ï¼Œusedå‡ä¸€
                 lastidx = event_pool->used - 1;
                 if (lastidx == idx) {
                         event_pool->used--;
                         goto unlock;
                 }
 
-                //²»ÊÇ×îºóÒ»¸ö£¬°Ñ×îºóÒ»¸öÒÆ¶¯µ½¸Õ¸ÕÉ¾³ýµÄÎ»ÖÃ
+                //ä¸æ˜¯æœ€åŽä¸€ä¸ªï¼ŒæŠŠæœ€åŽä¸€ä¸ªç§»åŠ¨åˆ°åˆšåˆšåˆ é™¤çš„ä½ç½®
                 epoll_event.events = event_pool->reg[lastidx].events;
                 ev_data->fd = event_pool->reg[lastidx].fd;
-                ev_data->idx = idx; //ÐÞ¸Äidx
+                ev_data->idx = idx; //ä¿®æ”¹idx
 
-                //ÐÞ¸ÄÒÑ¾­×¢²áµÄfdµÄ¼àÌýÊÂ¼þ, ÐÞ¸ÄÁËidx
+                //ä¿®æ”¹å·²ç»æ³¨å†Œçš„fdçš„ç›‘å¬äº‹ä»¶, ä¿®æ”¹äº†idx
                 ret = epoll_ctl (event_pool->fd, EPOLL_CTL_MOD, ev_data->fd,
                                  &epoll_event);
                 if (ret == -1) {
@@ -309,7 +309,7 @@ out:
 }
 
 
-/*ÐÞ¸ÄÒÑ¾­×¢²áµÄfdµÄ¼àÌýÊÂ¼þµÄÊôÐÔ*/
+/*ä¿®æ”¹å·²ç»æ³¨å†Œçš„fdçš„ç›‘å¬äº‹ä»¶çš„å±žæ€§*/
 static int
 event_select_on_epoll (struct event_pool *event_pool, int fd, int idx_hint,
                        int poll_in, int poll_out)
@@ -386,7 +386,7 @@ out:
         return ret;
 }
 
-//·Ö·¢ÊÂ¼þ´¦Àí
+//åˆ†å‘äº‹ä»¶å¤„ç†
 static int
 event_dispatch_epoll_handler (struct event_pool *event_pool,
                               struct epoll_event *events, int i)
@@ -413,16 +413,16 @@ event_dispatch_epoll_handler (struct event_pool *event_pool,
                                 event_data->fd, event_data->idx);
                         goto unlock;
                 }
-                //´¦Àíº¯Êý
+                //å¤„ç†å‡½æ•°
                 handler = event_pool->reg[idx].handler;
-                //Ë½ÓÐÊý¾Ý
+                //ç§æœ‰æ•°æ®
                 data = event_pool->reg[idx].data;
         }
 unlock:
         pthread_mutex_unlock (&event_pool->mutex);
 
         //socket_event_handler
-        //µ÷ÓÃ´¦Àíº¯Êý
+        //è°ƒç”¨å¤„ç†å‡½æ•°
         if (handler)
                 ret = handler (event_data->fd, event_data->idx, data,
                                (events[i].events & (EPOLLIN|EPOLLPRI)),
@@ -446,11 +446,11 @@ event_dispatch_epoll (struct event_pool *event_pool)
                 pthread_mutex_lock (&event_pool->mutex);
                 {
                         while (event_pool->used == 0)
-                                //×èÈûµÈ´ýÌõ¼þµÄ¸Ä±ä£¬event_resister_epollº¯ÊýÓÐ»½ÐÑ
+                                //é˜»å¡žç­‰å¾…æ¡ä»¶çš„æ”¹å˜ï¼Œevent_resister_epollå‡½æ•°æœ‰å”¤é†’
                                 pthread_cond_wait (&event_pool->cond,
                                                    &event_pool->mutex);
 
-                        //ÈçºÎ¼àÌýÊý±ÈÊÂ¼þ»º´æ´ó£¬Ôò´ÓÐÂ·ÖÅä»º´æ´óÐ¡
+                        //å¦‚ä½•ç›‘å¬æ•°æ¯”äº‹ä»¶ç¼“å­˜å¤§ï¼Œåˆ™ä»Žæ–°åˆ†é…ç¼“å­˜å¤§å°
                         if (event_pool->used > event_pool->evcache_size) {
                                 free (event_pool->evcache);
 
@@ -469,14 +469,14 @@ event_dispatch_epoll (struct event_pool *event_pool)
                 }
                 pthread_mutex_unlock (&event_pool->mutex);
 
-                //ÓÀ¾Ã×èÈûµÈ´ýÊÂ¼þµÄ²úÉú£¬·µ»ØÐèÒª´¦ÀíµÄÊÂ¼þÊýÄ¿
+                //æ°¸ä¹…é˜»å¡žç­‰å¾…äº‹ä»¶çš„äº§ç”Ÿï¼Œè¿”å›žéœ€è¦å¤„ç†çš„äº‹ä»¶æ•°ç›®
                 /*
-                ÊÕ¼¯ÔÚepoll¼à¿ØµÄÊÂ¼þÖÐÒÑ¾­·¢ËÍµÄÊÂ¼þ¡£²ÎÊýeventsÊÇ·ÖÅäºÃµÄepoll_event
-                ½á¹¹ÌåÊý×é£¬epoll½«»á°Ñ·¢ÉúµÄÊÂ¼þ¸³Öµµ½eventsÊý×éÖÐ£¨events²»¿ÉÒÔÊÇ¿ÕÖ¸Õë£¬
-                ÄÚºËÖ»¸ºÔð°ÑÊý¾Ý¸´ÖÆµ½Õâ¸öeventsÊý×éÖÐ£¬²»»áÈ¥°ïÖúÎÒÃÇÔÚÓÃ»§Ì¬ÖÐ·ÖÅäÄÚ´æ£©¡£
-                maxevents¸æÖ®ÄÚºËÕâ¸öeventsÓÐ¶à´ó£¬Õâ¸ö maxeventsµÄÖµ²»ÄÜ´óÓÚ´´½¨epoll_create()Ê±µÄsize£¬
-                ²ÎÊýtimeoutÊÇ³¬Ê±Ê±¼ä£¨ºÁÃë£¬0»áÁ¢¼´·µ»Ø£¬-1½«²»È·¶¨£¬Ò²ÓÐËµ·¨ËµÊÇÓÀ¾Ã×èÈû£©¡£
-                Èç¹ûº¯Êýµ÷ÓÃ³É¹¦£¬·µ»Ø¶ÔÓ¦I/OÉÏÒÑ×¼±¸ºÃµÄÎÄ¼þÃèÊö·ûÊýÄ¿£¬Èç·µ»Ø0±íÊ¾ÒÑ³¬Ê±¡£
+                æ”¶é›†åœ¨epollç›‘æŽ§çš„äº‹ä»¶ä¸­å·²ç»å‘é€çš„äº‹ä»¶ã€‚å‚æ•°eventsæ˜¯åˆ†é…å¥½çš„epoll_event
+                ç»“æž„ä½“æ•°ç»„ï¼Œepollå°†ä¼šæŠŠå‘ç”Ÿçš„äº‹ä»¶èµ‹å€¼åˆ°eventsæ•°ç»„ä¸­ï¼ˆeventsä¸å¯ä»¥æ˜¯ç©ºæŒ‡é’ˆï¼Œ
+                å†…æ ¸åªè´Ÿè´£æŠŠæ•°æ®å¤åˆ¶åˆ°è¿™ä¸ªeventsæ•°ç»„ä¸­ï¼Œä¸ä¼šåŽ»å¸®åŠ©æˆ‘ä»¬åœ¨ç”¨æˆ·æ€ä¸­åˆ†é…å†…å­˜ï¼‰ã€‚
+                maxeventså‘Šä¹‹å†…æ ¸è¿™ä¸ªeventsæœ‰å¤šå¤§ï¼Œè¿™ä¸ª maxeventsçš„å€¼ä¸èƒ½å¤§äºŽåˆ›å»ºepoll_create()æ—¶çš„sizeï¼Œ
+                å‚æ•°timeoutæ˜¯è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼Œ0ä¼šç«‹å³è¿”å›žï¼Œ-1å°†ä¸ç¡®å®šï¼Œä¹Ÿæœ‰è¯´æ³•è¯´æ˜¯æ°¸ä¹…é˜»å¡žï¼‰ã€‚
+                å¦‚æžœå‡½æ•°è°ƒç”¨æˆåŠŸï¼Œè¿”å›žå¯¹åº”I/Oä¸Šå·²å‡†å¤‡å¥½çš„æ–‡ä»¶æè¿°ç¬¦æ•°ç›®ï¼Œå¦‚è¿”å›ž0è¡¨ç¤ºå·²è¶…æ—¶ã€‚
                 */
                 ret = epoll_wait (event_pool->fd, event_pool->evcache,
                                   event_pool->evcache_size, -1);
@@ -494,9 +494,9 @@ event_dispatch_epoll (struct event_pool *event_pool)
                 for (i = 0; i < size; i++) {
                         if (!events || !events[i].events)
                                 continue;
-                        //EPOLLOUTÊÂ¼þÖ»ÓÐÔÚÁ¬½ÓÊ±´¥·¢Ò»´Î£¬±íÊ¾¿ÉÐ´£¬ÆäËûÊ±ºòÏëÒª´¥·¢£¬ÄÇÄãÒªÏÈ×¼±¸ºÃÏÂÃæÌõ¼þ£º
-                        //1.Ä³´Îwrite£¬Ð´ÂúÁË·¢ËÍ»º³åÇø£¬·µ»Ø´íÎóÂëÎªEAGAIN¡£
-                        //2.¶Ô¶Ë¶ÁÈ¡ÁËÒ»Ð©Êý¾Ý£¬ÓÖÖØÐÂ¿ÉÐ´ÁË£¬´ËÊ±»á´¥·¢EPOLLOUT
+                        //EPOLLOUTäº‹ä»¶åªæœ‰åœ¨è¿žæŽ¥æ—¶è§¦å‘ä¸€æ¬¡ï¼Œè¡¨ç¤ºå¯å†™ï¼Œå…¶ä»–æ—¶å€™æƒ³è¦è§¦å‘ï¼Œé‚£ä½ è¦å…ˆå‡†å¤‡å¥½ä¸‹é¢æ¡ä»¶ï¼š
+                        //1.æŸæ¬¡writeï¼Œå†™æ»¡äº†å‘é€ç¼“å†²åŒºï¼Œè¿”å›žé”™è¯¯ç ä¸ºEAGAINã€‚
+                        //2.å¯¹ç«¯è¯»å–äº†ä¸€äº›æ•°æ®ï¼Œåˆé‡æ–°å¯å†™äº†ï¼Œæ­¤æ—¶ä¼šè§¦å‘EPOLLOUT
                         ret = event_dispatch_epoll_handler (event_pool,
                                                             events, i);
                 }
