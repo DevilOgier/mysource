@@ -18,14 +18,14 @@
 
 
 struct event_slot_epoll {
-	int fd; /*¼àÌıµÄfd*/
-	int events; /* Epoll events ÔÚstruct epoll_eventÓĞ¶¨Òå */
+	int fd; /*ç›‘å¬çš„fd*/
+	int events; /* Epoll events åœ¨struct epoll_eventæœ‰å®šä¹‰ */
 	int gen;
 	int ref;
 	int do_close;
 	int in_handler;
-	void *data; /* ÓÃ»§Êı¾İ£¬Óëstruct epoll_eventÖĞµÄdata²»Ò»Ñù*/
-	event_handler_t handler; /*´¦Àíº¯Êı*/
+	void *data; /* ç”¨æˆ·æ•°æ®ï¼Œä¸struct epoll_eventä¸­çš„dataä¸ä¸€æ ·*/
+	event_handler_t handler; /*å¤„ç†å‡½æ•°*/
 	gf_lock_t lock;
 };
 
@@ -64,13 +64,13 @@ __event_slot_alloc (struct event_pool *event_pool, int fd)
 	int  gen = -1;
 	struct event_slot_epoll *table = NULL;
 
-    //ÏÈÕÒÒ»¸ötable
+    //å…ˆæ‰¾ä¸€ä¸ªtable
 	for (i = 0; i < EVENT_EPOLL_TABLES; i++) {
 		switch (event_pool->slots_used[i]) {
-        //Ä³¸ö¶ş¼¶±ítable±»È«²¿Ê¹ÓÃ£¬µ÷µ½Ò»¼¶±íµÄÏÂÒ»¸ö
+        //æŸä¸ªäºŒçº§è¡¨tableè¢«å…¨éƒ¨ä½¿ç”¨ï¼Œè°ƒåˆ°ä¸€çº§è¡¨çš„ä¸‹ä¸€ä¸ª
 		case EVENT_EPOLL_SLOTS:
 			continue;
-        //Õâ¸ötable»¹Ã»·ÖÅäÄÚ´æ£¬ÏÈ·ÖÅäÄÚ´æ
+        //è¿™ä¸ªtableè¿˜æ²¡åˆ†é…å†…å­˜ï¼Œå…ˆåˆ†é…å†…å­˜
 		case 0:
 			if (!event_pool->ereg[i]) {
 				table = __event_newtable (event_pool, i);
@@ -80,7 +80,7 @@ __event_slot_alloc (struct event_pool *event_pool, int fd)
                                 table = event_pool->ereg[i];
                         }
 			break;
-        // Õâ¸ötable»¹Ã»ÓÃÂú
+        // è¿™ä¸ªtableè¿˜æ²¡ç”¨æ»¡
 		default:
 			table = event_pool->ereg[i];
 			break;
@@ -94,11 +94,11 @@ __event_slot_alloc (struct event_pool *event_pool, int fd)
 	if (!table)
 		return -1;
 
-    //µÚ¼¸¸ö±í
+    //ç¬¬å‡ ä¸ªè¡¨
 	table_idx = i;
 
 	for (i = 0; i < EVENT_EPOLL_SLOTS; i++) {
-        //²éÕÒÒ»¸ö»¹Ã»±»Ê¹ÓÃµÄÎ»ÖÃ
+        //æŸ¥æ‰¾ä¸€ä¸ªè¿˜æ²¡è¢«ä½¿ç”¨çš„ä½ç½®
 		if (table[i].fd == -1) {
 			/* wipe everything except bump the generation */
 			gen = table[i].gen;
@@ -117,7 +117,7 @@ __event_slot_alloc (struct event_pool *event_pool, int fd)
 	return table_idx * EVENT_EPOLL_SLOTS + i;
 }
 
-//¸ù¾İfd·ÖÅäÒ»¸ö»¹Ã»Ê¹ÓÃµÄid
+//æ ¹æ®fdåˆ†é…ä¸€ä¸ªè¿˜æ²¡ä½¿ç”¨çš„id
 static int
 event_slot_alloc (struct event_pool *event_pool, int fd)
 {
@@ -171,7 +171,7 @@ event_slot_dealloc (struct event_pool *event_pool, int idx)
 	return;
 }
 
-//ereg->table->slot¶ş¼¶±í
+//ereg->table->slotäºŒçº§è¡¨
 static struct event_slot_epoll *
 event_slot_get (struct event_pool *event_pool, int idx)
 {
@@ -227,7 +227,7 @@ done:
 	return;
 }
 
-//ÊÂ¼ş³ØĞÂ½¨º¯Êı
+//äº‹ä»¶æ± æ–°å»ºå‡½æ•°
 static struct event_pool *
 event_pool_new_epoll (int count, int eventthreadcount)
 {
@@ -261,7 +261,7 @@ out:
         return event_pool;
 }
 
-//¸üĞÂÊ±¼äÊôĞÔ
+//æ›´æ–°æ—¶é—´å±æ€§
 static void
 __slot_update_events (struct event_slot_epoll *slot, int poll_in, int poll_out)
 {
@@ -297,7 +297,7 @@ __slot_update_events (struct event_slot_epoll *slot, int poll_in, int poll_out)
 }
 
 
-/*ÊÂ¼ş×¢²áº¯Êı*/
+/*äº‹ä»¶æ³¨å†Œå‡½æ•°*/
 int
 event_register_epoll (struct event_pool *event_pool, int fd,
                       event_handler_t handler,
@@ -350,9 +350,12 @@ event_register_epoll (struct event_pool *event_pool, int fd,
 		   thread has picked up and is processing an event,
 		   another poller will not try to pick this at the same
 		   time as well.
+		   EPOLLONESHOTï¼šåªç›‘å¬ä¸€æ¬¡äº‹ä»¶ï¼Œå½“ç›‘å¬å®Œè¿™æ¬¡äº‹ä»¶ä¹‹åï¼Œå¦‚æœè¿˜éœ€è¦ç»§ç»­ç›‘å¬è¿™ä¸ªsocketçš„è¯ï¼Œéœ€è¦å†æ¬¡æŠŠè¿™ä¸ªsocketåŠ å…¥åˆ°EPOLLé˜Ÿåˆ—é‡Œ
+		   http://fpcfjf.blog.163.com/blog/static/5546979320146193451475/
 		*/
 
-		slot->events = EPOLLET; // ±ßÔµ´¥·¢·½Ê½  EPOLLPRI | EPOLLONESHOT;
+		slot->events = EPOLLET; // è¾¹ç¼˜è§¦å‘æ–¹å¼  EPOLLPRI | EPOLLONESHOT;
+		//slot->events = EPOLLONESHOT; //é»˜è®¤ä¸ºæ°´å¹³è§¦å‘,æ°´å¹³è§¦å‘å¦‚æœä¸åŠ EPOLLONESHOTä¼šå¯¼è‡´å¤šä¸ªçº¿ç¨‹æŠ¢å ï¼ŒåŒæ—¶è¯»åŒä¸ªfd
 		slot->handler = handler;
 		slot->data = data;
 
@@ -444,7 +447,7 @@ event_unregister_close_epoll (struct event_pool *event_pool, int fd,
 	return ret;
 }
 
-/*ĞŞ¸ÄÒÑ¾­×¢²áµÄfdµÄ¼àÌıÊÂ¼şµÄÊôĞÔ*/
+/*ä¿®æ”¹å·²ç»æ³¨å†Œçš„fdçš„ç›‘å¬äº‹ä»¶çš„å±æ€§*/
 static int
 event_select_on_epoll (struct event_pool *event_pool, int fd, int idx,
                        int poll_in, int poll_out)
@@ -555,7 +558,6 @@ pre_unlock:
 
         if (!handler)
 		goto out;
-
 	ret = handler (fd, idx, data,
 		       (event->events & (EPOLLIN|EPOLLPRI)),
 		       (event->events & (EPOLLOUT)),
@@ -582,9 +584,12 @@ pre_unlock:
 		   thread was busy in handler()
 		*/
                 if (slot->in_handler == 0) {
+
                         event->events = slot->events;
-                        ret = epoll_ctl (event_pool->fd, EPOLL_CTL_MOD,
-                                         fd, event);
+						// ä½¿ç”¨è¾¹ç¼˜è§¦å‘ï¼Œæœ‰æ•°æ®æ²¡è¯»å®Œè¿˜ä¼šé‡æ–°è§¦å‘ï¼Œä¸è¿‡ä¸€èˆ¬ä½¿ç”¨è¾¹ç¼˜è§¦å‘ä¼šåœ¨handlerå‡½æ•°è¯»å®Œæ‰€æœ‰æ•°æ®ï¼Œ
+						// è¿™é‡Œçš„ç›®çš„æ˜¯é˜²æ­¢åœ¨è°ƒç”¨handleræ—¶æœ‰è°ƒç”¨event_select_on_epoll(event_select_on_epollå‡½æ•°ç›´æ¥é€€å‡ºï¼Œæ‰€ä»¥è¿™é‡Œè¦è°ƒç”¨epoll_ctlè¡¥ä¸€ä¸‹),
+						// å¤šçº¿ç¨‹ä¸èƒ½åœ¨è°ƒç”¨å¤„ç†å‡½æ•°æ—¶è°ƒç”¨epoll_ctl,ä¼šå¯¼è‡´å¦ä¸€ä¸ªçº¿ç¨‹è¢«å”¤é†’ï¼ŒæŠ¢å åŒä¸€ä¸ªfd
+                        ret = epoll_ctl (event_pool->fd, EPOLL_CTL_MOD, fd, event);
                 }
 	}
 post_unlock:
@@ -648,7 +653,7 @@ event_dispatch_epoll_worker (void *data)
                         }
                 }
 
-                //Ã¿´ÎÖ»·µ»ØÒ»¸öÊ±¼ä£¬¶à¸ö½ø³ÌÍ¬Ê±½øĞĞ
+                //æ¯æ¬¡åªè¿”å›ä¸€ä¸ªäº‹ä»¶ï¼Œå¤šä¸ªçº¿ç¨‹åŒæ—¶è¿›è¡Œ
                 ret = epoll_wait (event_pool->fd, &event, 1, -1);
 
                 if (ret == 0)

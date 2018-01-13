@@ -11,6 +11,7 @@ extern "C"{
 #include <netdb.h>  
 #include <fcntl.h> 
 #include <errno.h>
+#include <pthread.h>
 
 #include "../debug/debug.h"
 #include "event.h"
@@ -59,6 +60,9 @@ create_and_bind (char *port)
       sfd = socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);  
       if (sfd == -1)  
         continue;  
+	int reuse0=1;
+    if (setsockopt(sfd, SOL_SOCKET, SO_REUSEPORT, (char *)&reuse0, sizeof(reuse0))==-1)
+	  return -1;
   
       s = bind (sfd, rp->ai_addr, rp->ai_addrlen);  
       if (s == 0)  
@@ -116,14 +120,17 @@ socket_event_handler (int fd, int idx, void *data,
     server_data = (struct private_data *)data;
     int done = 0;
     int ret = 0;
+	pthread_t pid;
+	pid = pthread_self();
+	printf("pthread_t %ld start new socket_event_handler poll_in %d poll_out %d poll_err %d\n",pid,poll_in, poll_out, poll_err);
     if (poll_in == 0)
         return 0;
     while (1)  
                 {  
                   ssize_t count;  
-                  char buf[1024*128];  
+                  char buf[6];  
   
-                  count = read (server_data->fd, buf, sizeof(buf));  
+                  count = read (server_data->fd, buf, sizeof(buf)-1);  
                   if (count == -1)  
                     {  
                       /* If errno == EAGAIN, that means we have read all 
@@ -143,9 +150,9 @@ socket_event_handler (int fd, int idx, void *data,
                       done = 1;  
                       break;  
                     }  
-  
+				buf[count] = 0;
                   /* Write the buffer to standard output */ 
-                  //printf("read %d \n", server_data->fd);
+                  printf("pthread_t %ld read %d count %ld data:%s\n",pid, server_data->fd,count,buf);
                   //break;
                   /*ret = write (1, buf, count);  
                   if (ret == -1)  
@@ -153,6 +160,10 @@ socket_event_handler (int fd, int idx, void *data,
                       perror ("write");  
                       abort ();  
                     }  */
+				sleep(3);
+				
+				// 为了测试边缘触发，数据没读完就退出，正常没有break
+				break;
          }  
   
               if (done)  
@@ -213,7 +224,7 @@ socket_server_event_handler (int fd, int idx, void *data,
 
             if (ret == 0)  
             {  
-              if (new_sock % INTERVAL_NUM == 0)
+              //if (new_sock % INTERVAL_NUM == 0)
                  printf("Accepted connection on descriptor %d "  
                       "(host=%s, port=%s)\n", new_sock, hbuf, sbuf);  
             }  
@@ -249,6 +260,7 @@ int32_t main(int32_t argc, char **argv)
 {
   int sfd;  
   int ret;
+  pid_t pid;
     
   struct private_data *data;
   
@@ -257,7 +269,8 @@ int32_t main(int32_t argc, char **argv)
       fprintf (stderr, "Usage: %s [port]\n", argv[0]);  
       exit (EXIT_FAILURE);  
     }  
-  
+  pid = getpid();
+  printf("pid %d\n",pid);
   sfd = create_and_bind (argv[1]);  
   if (sfd == -1)  
     abort ();  
