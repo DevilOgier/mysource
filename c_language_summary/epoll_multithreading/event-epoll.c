@@ -261,7 +261,7 @@ out:
         return event_pool;
 }
 
-//更新时间属性
+//更新事件属性
 static void
 __slot_update_events (struct event_slot_epoll *slot, int poll_in, int poll_out)
 {
@@ -589,6 +589,7 @@ pre_unlock:
 						// 使用边缘触发，有数据没读完还会重新触发，不过一般使用边缘触发会在handler函数读完所有数据，
 						// 这里的目的是防止在调用handler时有调用event_select_on_epoll(event_select_on_epoll函数直接退出，所以这里要调用epoll_ctl补一下),
 						// 多线程不能在调用处理函数时调用epoll_ctl,会导致另一个线程被唤醒，抢占同一个fd
+						// 每次调用event_dispatch_epoll_handler都要调用EPOLL_CTL_MOD
                         ret = epoll_ctl (event_pool->fd, EPOLL_CTL_MOD, fd, event);
                 }
 	}

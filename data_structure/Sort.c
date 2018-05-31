@@ -46,7 +46,7 @@ void insertSort(int R[], int n)
     for ( i = 1; i < n; ++i ) {  
         if ( R[i] < R[i - 1] ) {//将R[i]插入有序字表  
             key = R[i];        //可以R[0]不用，用作哨兵  
-            for ( j = i - 1; R[j] > key && j>=0; --j ) {  
+            for ( j = i - 1; j>=0 && R[j] > key ; --j ) {  
                 R[j+1] = R[j];  
             }  
             R[j+1] = key;  
@@ -194,6 +194,8 @@ void bubbleSort(int R[], int n)
   不稳定 
 */ 
 
+//https://www.cnblogs.com/chengxiao/p/6262208.html 图解排序算法(五)之快速排序——三数取中法
+
 void quickSort(int *R, int left, int right)
 {
     if(left >= right)/*如果左边的数组大于或者等于就代表已经整理完成一个组了*/
@@ -267,6 +269,8 @@ void selectSort(int R[], int n)
   * @brief     构建 大顶堆 
   * @attention 个人版本，堆排序 
   */  
+
+ // https://www.cnblogs.com/chengxiao/p/6129630.html  图解堆排序
   
 //start 为原根节点，end 节点数，参与调整的为[start,end]中为start子孙的节点 
 void heapAdjust(int R[], int start, int end)  

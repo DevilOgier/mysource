@@ -53,6 +53,7 @@ static int drv_kpart_probe(struct device *dev) {
 
 static int drv_kpart_remove(struct device *dev) {
 	printk(KERN_ERR "drv_kpart_remove");
+    kfree((void *)kpart_info.mem[0].addr);
 	uio_unregister_device(&kpart_info);
 
 	return 0;

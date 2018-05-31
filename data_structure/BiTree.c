@@ -77,6 +77,37 @@ Status Visit(Elemtype data)
     printf("%c ",data);
 }
 
+// 由下面是三个函数可知，三种遍历方式只是打印的位置不同
+void preorder(BiTree root)
+{
+    if (root != NULL)
+    {
+        printf("%c ", root->data);  // 前序
+        preorder(root->lchild);
+        //printf("%c ", root->data);  // 中序
+        preorder(root->rchild);
+        //printf("%c ", root->data);  // 后序
+    }
+}
+void inorder(BiTree root)
+{
+    if (root != NULL)
+    {
+        inorder(root->lchild);
+        printf("%c ", root->data);
+        inorder(root->rchild);
+    }
+}
+void postorder(BiTree root)
+{
+    if (root != NULL)
+    {
+        postorder(root->lchild);
+        postorder(root->rchild);
+        printf("%c ", root->data);
+    }
+}
+
 Status PreOrderTraverse( BiTree T, Status(*Visit)(Elemtype) ) {
    // 算法6.1
    // 采用二叉链表存储结构，Visit是对数据元素操作的应用函数，
@@ -160,7 +191,7 @@ Status InOrderTraverse3(BiTree T, Status (*Visit)(Elemtype)) {
 Status LevelOrderTraverse(BiTree T, Status (*Visit)(Elemtype)) {	//层次遍历
   BiTree p;
   LinkQueue Q;//循环队列，元素为结点指针，类型为pointer
-  if(T==NULL) return;
+  if(T==NULL) return OK;
   InitQueue(&Q);
   EnQueue(&Q, T);			//根结点入队
   while(!IsEmpty(Q)) {	//队列非空时
@@ -315,6 +346,15 @@ int main()
     PostOrderTraverse(T, Visit);
     printf("\n");
     LevelOrderTraverse(T, Visit);
+    printf("\n");
+    printf("preorder: ");
+    preorder(T);
+    printf("\n");
+    printf("inorder: ");
+    inorder(T);
+    printf("\n");
+    printf("postorder: ");
+    postorder(T);
     printf("\n");
 
     LinkList l = path(T,'E');

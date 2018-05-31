@@ -1,0 +1,7 @@
+/.idea
+/src/.idea
+*.o
+*.ko
+*.cmd
+*.order
+*.symvers

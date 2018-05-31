@@ -1,1 +1,0 @@
-cmd_/home/code/github/chenzhongtao/mysource/uio/4.0/sample2/sample2.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/code/github/chenzhongtao/mysource/uio/4.0/sample2/sample2.ko /home/code/github/chenzhongtao/mysource/uio/4.0/sample2/sample2.o /home/code/github/chenzhongtao/mysource/uio/4.0/sample2/sample2.mod.o
