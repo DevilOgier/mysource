@@ -1,4 +1,8 @@
 /*
+http://www.cplusplus.com/reference/stack/stack/
+
+http://classfoo.com/ccby/article/s4SvF  中文版
+
 堆栈stack是容器适配器，它是以序列容器为底层实现。stack支持后入先出(LIFO)，数据的插入和删除都
 是在堆栈的顶部进行的，不能够访问堆栈内部的数据。stack不支持迭代器。
 
