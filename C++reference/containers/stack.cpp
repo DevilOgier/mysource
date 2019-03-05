@@ -1,29 +1,37 @@
 /*
 http://www.cplusplus.com/reference/stack/stack/
 
-http://classfoo.com/ccby/article/s4SvF  ÖĞÎÄ°æ
+http://classfoo.com/ccby/article/s4SvF  ä¸­æ–‡ç‰ˆ
 
-¶ÑÕ»stackÊÇÈİÆ÷ÊÊÅäÆ÷£¬ËüÊÇÒÔĞòÁĞÈİÆ÷Îªµ×²ãÊµÏÖ¡£stackÖ§³ÖºóÈëÏÈ³ö(LIFO)£¬Êı¾İµÄ²åÈëºÍÉ¾³ı¶¼
-ÊÇÔÚ¶ÑÕ»µÄ¶¥²¿½øĞĞµÄ£¬²»ÄÜ¹»·ÃÎÊ¶ÑÕ»ÄÚ²¿µÄÊı¾İ¡£stack²»Ö§³Öµü´úÆ÷¡£
+å †æ ˆstackæ˜¯å®¹å™¨é€‚é…å™¨ï¼Œå®ƒæ˜¯ä»¥åºåˆ—å®¹å™¨ä¸ºåº•å±‚å®ç°ã€‚stackæ”¯æŒåå…¥å…ˆå‡º(LIFO)ï¼Œæ•°æ®çš„æ’å…¥å’Œåˆ é™¤éƒ½
+æ˜¯åœ¨å †æ ˆçš„é¡¶éƒ¨è¿›è¡Œçš„ï¼Œä¸èƒ½å¤Ÿè®¿é—®å †æ ˆå†…éƒ¨çš„æ•°æ®ã€‚stackä¸æ”¯æŒè¿­ä»£å™¨ã€‚
 
 template <class T, class Container = deque<T> > class stack;
 
-stack::emplace
-stack::empty  ²âÊÔ¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷ÀàĞÍÊÇ·ñÎª¿Õ
-stack::pop    µ¯³ö¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷Õ»¶¥µÄÊı¾İ
-stack::push   ½«Êı¾İÑ¹Èë¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷
-stack::size   ·µ»Ø¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷ÖĞµÄÊı¾İ¸öÊı
-stack::swap   
-stack::top    ·ÃÎÊ¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷Õ»¶¥Êı¾İ
+Element access:
+top	è®¿é—®é¡¶éƒ¨å…ƒç´ 
 
+Capacity:
+empty	åˆ¤æ–­æ˜¯å¦ä¸ºç©º
+size	è¿”å›æœ‰æ•ˆå…ƒç´ ä¸ªæ•°
+
+Modifiers:
+push	åœ¨å®¹å™¨é¡¶éƒ¨æ’å…¥å…ƒç´ 
+pop	ç§»é™¤å®¹å™¨é¡¶éƒ¨çš„å…ƒç´ 
+emplace C++11	åœ¨å®¹å™¨é¡¶éƒ¨æ”¾ç½®æ’å…¥å…ƒç´ 
+swap	äº¤æ¢å®¹å™¨çš„å†…å®¹
+
+
+value_type& top();
+const value_type& top() const;
 bool empty() const;
+size_type size() const;
+
 void pop();
 void push (const value_type& val);
 void push (value_type&& val);
-size_type size() const;
 void swap (stack& x)
-      reference& top();
-const_reference& top() const;
+
 */
 
 #include <iostream>       // std::cin, std::cout
@@ -36,30 +44,30 @@ const_reference& top() const;
 
 int main ()
 {
-	//ÊµÀı»¯Ò»¸ö¶ÑÕ»Àà
+	//å®ä¾‹åŒ–ä¸€ä¸ªå †æ ˆç±»
 	std::stack<std::string> mystack;
 
-	//½«Êı¾İÑ¹Èë¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷
+	//å°†æ•°æ®å‹å…¥å †æ ˆå®¹å™¨é€‚é…å™¨
 	mystack.push ("First sentence");
 	mystack.push ("Second sentence");
 
-	//·µ»Ø¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷ÖĞµÄÊı¾İ¸öÊı
+	//è¿”å›å †æ ˆå®¹å™¨é€‚é…å™¨ä¸­çš„æ•°æ®ä¸ªæ•°
 	std::cout << "stack size: " << mystack.size() << '\n';
 
 	std::cout << "mystack contains:\n";
 
-	//²âÊÔ¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷ÀàĞÍÊÇ·ñÎª¿Õ
+	//æµ‹è¯•å †æ ˆå®¹å™¨é€‚é…å™¨ç±»å‹æ˜¯å¦ä¸ºç©º
 	while (!mystack.empty())
 	{
 
-		//·ÃÎÊ¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷Õ»¶¥Êı¾İ
+		//è®¿é—®å †æ ˆå®¹å™¨é€‚é…å™¨æ ˆé¡¶æ•°æ®
 		std::cout << mystack.top() << '\n';
-		//µ¯³ö¶ÑÕ»ÈİÆ÷ÊÊÅäÆ÷Õ»¶¥µÄÊı¾İ
+		//å¼¹å‡ºå †æ ˆå®¹å™¨é€‚é…å™¨æ ˆé¡¶çš„æ•°æ®
 		mystack.pop();
 	}
 
-	//¶ÑÕ»ÊÇÈİÆ÷ÊÊÅäÆ÷£¬ËüÊÇÒÔĞòÁĞÈİÆ÷Îªµ×²ãÊµÏÖ.±ê×¼µÄÈİÆ÷ÀàÄ£°åvector, deque ºÍlist¿ÉÒÔÊ¹ÓÃ£¬Ä¬ÈÏÇé¿öÏÂ£¬
-	//Èç¹ûÃ»ÓĞÈİÆ÷Àà±»Ö¸¶¨³ÉÎªÒ»¸öÌØ±ğµÄstack Àà£¬±ê×¼µÄÈİÆ÷ÀàÄ£°å¾ÍÊÇdeque ¶ÓÁĞ
+	//å †æ ˆæ˜¯å®¹å™¨é€‚é…å™¨ï¼Œå®ƒæ˜¯ä»¥åºåˆ—å®¹å™¨ä¸ºåº•å±‚å®ç°.æ ‡å‡†çš„å®¹å™¨ç±»æ¨¡æ¿vector, deque å’Œlistå¯ä»¥ä½¿ç”¨ï¼Œé»˜è®¤æƒ…å†µä¸‹ï¼Œ
+	//å¦‚æœæ²¡æœ‰å®¹å™¨ç±»è¢«æŒ‡å®šæˆä¸ºä¸€ä¸ªç‰¹åˆ«çš„stack ç±»ï¼Œæ ‡å‡†çš„å®¹å™¨ç±»æ¨¡æ¿å°±æ˜¯deque é˜Ÿåˆ—
 	std::deque<int> mydeque (3,100);          // deque with 3 elements {100, 100, 100}
 	std::vector<int> myvector (2,200);        // vector with 2 elements {200, 200}
 
@@ -85,10 +93,73 @@ int main ()
 	std::cout << "size of third: " << third.size() << '\n';
 	std::cout << "size of fourth: " << fourth.size() << '\n';
 	std::cout << "The top of fourth: " << fourth.top() << '\n';
+    
+    std::stack<int> foo,bar;
+    foo.push (10); foo.push(20); foo.push(30);
+    bar.push (111); bar.push(222);
 
-	return 0;
+    foo.swap(bar);
+
+    std::cout << "size of foo: " << foo.size() << '\n';
+    std::cout << "size of bar: " << bar.size() << '\n';
+    
+    std::stack<int> stest;
+    int val = 2;
+    stest.push(val);
+    val++;
+    std::cout << stest.top() << '\n';
+
+    std::vector<int> vtest;
+    std::vector<int> vtest2;
+    std::stack<std::vector<int>> stest2;
+    stest2.push(vtest);
+    vtest.push_back(1);
+    // è™½ç„¶è¿”å›å€¼æ˜¯å¼•ç”¨ç±»å‹ï¼Œä½†æ˜¯æ˜¯ä¸´æ—¶å˜é‡å¼•ç”¨äº†ï¼Œç„¶åä¸´æ—¶å˜é‡æ‹·è´ç»™vtest2
+    vtest2 = stest2.top();
+    std::cout << vtest.size() << " " << vtest2.size()<< '\n';
+
+    // å¼•ç”¨è¦åœ¨å®šä¹‰æ—¶åˆå§‹åŒ–
+    std::vector<int> &vtest3 = stest2.top();
+    std::vector<int> &vtest4 = stest2.top();
+    vtest3.push_back(1);
+    std::cout << vtest3.size() << " " << vtest4.size()<< '\n';
+    // https://blog.csdn.net/u012501459/article/details/44132147/
+    //å¦å¤–å…³äº push ä¸ºä»€ä¹ˆä¼šæ‰§è¡Œæ‹·è´æ„é€ å‡½æ•°ï¼Œpush_back çš„åŸå‹ä¸ºï¼š
+    //void push (value_type&& val);
+    // å‚æ•°æ˜¯ä»¥å¼•ç”¨æ–¹å¼ä¼ é€’ï¼ŒæŒ‰è¯´ä¸ä¼šæ‹·è´ï¼Œä½† push å®é™…å®ç°ä¸­åˆ¤æ–­ç©ºé—´ä¸è¶³æ—¶æ˜¯è°ƒç”¨ insert å‡½æ•°æ·»åŠ å…ƒç´ ï¼š
+
+    std::stack<std::vector<int>> stest3;
+    vtest.push_back(2);
+    stest3.push(vtest);
+    stest3.top();
+    stest3.push(vtest);
+    std::vector<int> &vtest5 = stest3.top();
+    std::cout << vtest.size() << " " << vtest5.size()<< '\n';   // 2 2
+    vtest.pop_back();
+    std::cout << vtest.size() << " " << vtest5.size()<< '\n';   // 1 2
+
+    std::stack<std::vector<int> *> stest4;
+    stest4.push(&vtest);
+
+
+    std::stack<std::string> mystack2;
+    // è·Ÿpushæœ‰ä»€ä¹ˆåŒºåˆ«ï¼Ÿ
+    mystack2.emplace ("First sentence");
+    mystack2.emplace ("Second sentence");
+
+    std::cout << "mystack contains:\n";
+    while (!mystack2.empty())
+    {
+        std::cout << mystack2.top() << '\n';
+        mystack2.pop();
+    }
+
+
+    return 0;
 }
 /*
+g++ -std=c++11 stack.cpp -o /home/test && /home/test
+
 output:
 stack size: 2
 mystack contains:

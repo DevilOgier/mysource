@@ -1,0 +1,3 @@
+F:/code/github/chenzhongtao/mysource/cpp-test/cmake-build-debug/CMakeFiles/cpp_test.dir
+F:/code/github/chenzhongtao/mysource/cpp-test/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/code/github/chenzhongtao/mysource/cpp-test/cmake-build-debug/CMakeFiles/rebuild_cache.dir
